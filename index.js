@@ -1,15 +1,14 @@
-// import Webcam from "react-webcam";
-// import * as posenet from '/node_modules/@tensorflow-models/posenet';
-
 const imageElement = document.getElementById('human');
 const imageElements = document.getElementById('humans');
 const canvas = document.getElementById('canvas');
-//const video = document.getElementById('video');
+const video = document.getElementById('video');
 const ctx = canvas.getContext("2d");
 const minConfidence = 0.2;
+const VIDEO_HEIGHT = 640;
+const VIDEO_WIDTH = 480;
 const frameRate = 20;
 
-async function estimatePoseOnImage(imageElement) { 
+async function estimatePoseOnImage() { 
   //load posenet
   const net = await posenet.load();
   
@@ -20,28 +19,16 @@ async function estimatePoseOnImage(imageElement) {
     outputStride:16,
     scoreThreshold:0.5
   });
-    console.log(poses);
-    canvas1.width = 600;
-    canvas1.height = 600;
-    ctx1.clearRect(0, 0, 600, 600);
-    ctx1.save();
-    ctx1.drawImage(imageElements, 0, 0, 600, 600);
-    ctx1.restore();
-    poses.forEach(({ score, keypoints }) => {
-      if (score >= minConfidence) {
-        drawKeypoints(keypoints);
-        drawSkeleton(keypoints);
-      }
-    });
-  return pose;
+  console.log(poses);
+  return poses;
 }
 
-async function estimatePosesOnImage(imageElements){
+async function estimatePosesOnImage(){
   // load posenet
   const net = await posenet.load();
   
   const poses = await net.estimateMultiplePoses( 
-      imageElements,{ 
+      video,{ 
       imageScaleFactor:0.50, 
       flipHorizontal:false, 
       outputStride:16,    
@@ -50,11 +37,11 @@ async function estimatePosesOnImage(imageElements){
       nmsRadius:20
     });
     console.log(poses);
-    canvas.width = 640;
-    canvas.height = 480;
-    ctx.clearRect(0, 0, 640, 480);
+    canvas.width = VIDEO_WIDTH;
+    canvas.height = VIDEO_HEIGHT;
+    ctx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
     ctx.save();
-    ctx.drawImage(imageElements, 0, 0, 640, 480);
+    ctx.drawImage(imageElements, 0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
     ctx.restore();
     poses.forEach(({ score, keypoints }) => {
       if (score >= minConfidence) {
@@ -64,6 +51,16 @@ async function estimatePosesOnImage(imageElements){
     });
     return poses;
   }
+
+  const intervalID = setInterval(async () => {
+    try {
+      estimateMultiplePoses();
+    } catch (err) {
+      clearInterval(intervalID);
+      setErrorMessage(err.message);
+    }
+  }, Math.round(1000 / frameRate));
+  clearInterval(intervalID);
   
   function drawPoint(y, x, r) {
     ctx.beginPath();
@@ -103,9 +100,8 @@ async function estimatePosesOnImage(imageElements){
 
 async function init(){  
   // await webcam.setup();
-  estimatePoseOnImage(imageElement);
-  estimatePosesOnImage(imageElement);
-  estimatePosesOnImage(imageElements);
+  estimatePoseOnImage();
+  estimatePosesOnImage();
 }
 
 init();
