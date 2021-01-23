@@ -8,6 +8,56 @@ const VIDEO_HEIGHT = 640;
 const VIDEO_WIDTH = 480;
 const frameRate = 20;
 
+navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then(vid => {
+      video.srcObject = vid;
+      const intervalID = setInterval(async () => {
+        try {
+          estimatePosesOnImage();
+        } catch (err) {
+          clearInterval(intervalID)
+          setErrorMessage(err.message)
+        }
+      }, Math.round(1000 / frameRate))
+      return () => clearInterval(intervalID)
+    });
+
+function drawPoint(y, x, r) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fill();
+}
+
+function drawKeypoints(keypoints) {
+  for (let i = 0; i < keypoints.length; i++) {
+    const keypoint = keypoints[i];
+    console.log(`keypoint in drawkeypoints ${keypoint}`);
+    const { y, x } = keypoint.position;
+    drawPoint(y, x, 3);
+  }
+}
+function drawSegment(pair1, pair2, color, scale) {
+  ctx.beginPath();
+  ctx.moveTo(pair1.x * scale, pair1.y * scale);
+  ctx.lineTo(pair2.x * scale, pair2.y * scale);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+}
+function drawSkeleton(keypoints) { 
+  const color = "#FFFFFF";
+  const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
+    keypoints,
+    minConfidence);
+  adjacentKeyPoints.forEach((keypoint) => {
+    drawSegment(
+      keypoint[0].position,
+      keypoint[1].position,
+      color,  1,);
+  });
+}
+
 async function estimatePoseOnImage() { 
   //load posenet
   const net = await posenet.load();
@@ -52,51 +102,15 @@ async function estimatePosesOnImage(){
     return poses;
   }
 
-  const intervalID = setInterval(async () => {
-    try {
-      estimateMultiplePoses();
-    } catch (err) {
-      clearInterval(intervalID);
-      setErrorMessage(err.message);
-    }
-  }, Math.round(1000 / frameRate));
-  clearInterval(intervalID);
-  
-  function drawPoint(y, x, r) {
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 2 * Math.PI);
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fill();
+const intervalID = setInterval(async () => {
+  try {
+    estimateMultiplePoses();
+  } catch (err) {
+    clearInterval(intervalID);
+    setErrorMessage(err.message);
   }
-
-  function drawKeypoints(keypoints) {
-    for (let i = 0; i < keypoints.length; i++) {
-      const keypoint = keypoints[i];
-      console.log(`keypoint in drawkeypoints ${keypoint}`);
-      const { y, x } = keypoint.position;
-      drawPoint(y, x, 3);
-    }
-  }
-  function drawSegment(pair1, pair2, color, scale) {
-    ctx.beginPath();
-    ctx.moveTo(pair1.x * scale, pair1.y * scale);
-    ctx.lineTo(pair2.x * scale, pair2.y * scale);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = color;
-    ctx.stroke();
-  }
-  function drawSkeleton(keypoints) { 
-    const color = "#FFFFFF";
-    const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
-      keypoints,
-      minConfidence);
-    adjacentKeyPoints.forEach((keypoint) => {
-      drawSegment(
-        keypoint[0].position,
-        keypoint[1].position,
-        color,  1,);
-    });
-  }
+}, Math.round(1000 / frameRate));
+clearInterval(intervalID);
 
 async function init(){  
   // await webcam.setup();

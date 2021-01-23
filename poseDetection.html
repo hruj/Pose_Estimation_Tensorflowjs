@@ -8,28 +8,23 @@
 <body>
     <div>
 		<div className="App">
-			<!-- <header className="App-header" >
-				<Webcam ref = {webcamRef} style=" position: 'absolute'; marginLeft:'auto'; marginRight: 'auto'; left: 0; right: 0; textAlign: 'center'; zindex: 9; width: 640; height: 480;"/>
-				<canvas ref={canvasRef} style=" position: 'absolute'; marginLeft:'auto'; marginRight: 'auto'; left: 0; right: 0; textAlign: 'center'; zindex: 9; width: 640; height: 480;"/>
-			</header>
-		</div><br> -->
-		<div>
-			<video id="video" autoplay muted="true" style=" position:absolute width='640' height='480'"></video><br><br>
-			<canvas id="canvas" style="position:absolute;top:0;left:0;z-index:1;"></canvas>
+			<div>
+				<video id="video" autoplay muted="true" style=" position:absolute width='640' height='480'"></video><br><br>
+				<canvas id="canvas" style="position:absolute;top:0;left:0;z-index:1;"></canvas>
+			</div>
+			<div id='container'> 
+				<br><img id='human' src='/human.jpg' style="width: 640px; height: auto;"/>
+				<canvas id="canva" style="position: absolute;z-index:1;"></canvas><br><br>
+				<div id="prediction"></div><br>
+			</div><br><br>
+
+			<div id='container1'>
+				<img id='humans' src='/humans.jpg' style="width:640px; height:480;"/>
+				<canvas id="canva1" style="position: absolute;z-index:1;"></canvas><br><br>
+				<div id="predictions"></div><br><br>
+
+			</div><br>
 		</div>
-		<div id='container'> 
-			<br><img id='human' src='/human.jpg' style="width: 640px; height: auto;"/>
-			<canvas id="canva" style="position: absolute;z-index:1;"></canvas><br><br>
-			<div id="prediction"></div><br>
-		</div><br><br>
-		
-		<div id='container1'>
-			<img id='humans' src='/humans.jpg' style="width:640px; height:480;"/>
-			<canvas id="canva1" style="position: absolute;z-index:1;"></canvas><br><br>
-			<div id="predictions"></div><br><br>
-			
-		</div><br>
-	</div>
 	
 	<!-- <script type="text/javascript">
       posenet.load().then(function(net){});
