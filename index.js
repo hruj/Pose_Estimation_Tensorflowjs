@@ -62,17 +62,17 @@ async function estimatePoseOnImage() {
   //load posenet
   const net = await posenet.load();
   
-  const poses = await net.estimateSinglePose(
+  const pose = await net.estimateSinglePose(
     imageElement, {
     flipHorizontal: false,
     scaleFactor:0.5,
     outputStride:16,
     scoreThreshold:0.5
   });
-  console.log(poses);
-  return poses;
+  console.log(pose);
+  return pose;
 }
-
+/*
 async function estimatePosesOnImage(){
   // load posenet
   const net = await posenet.load();
@@ -100,6 +100,32 @@ async function estimatePosesOnImage(){
       }
     });
     return poses;
+  }*/
+  
+  async function estimatePosesOnImage(){
+    posenet
+      .load()
+      .then(function (net) {
+        console.log("estimateMultiplePoses .... ");
+        return net.estimatePoses(video, {
+          decodingMethod: "single-person",
+        });
+      })
+      .then(function (poses) {
+        console.log(`got Poses ${JSON.stringify(poses)}`);
+        canvas.width = VIDEO_WIDTH;
+        canvas.height = VIDEO_HEIGHT;
+        ctx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
+        ctx.save();
+        ctx.drawImage(video, 0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
+        ctx.restore();
+        poses.forEach(({ score, keypoints }) => {
+          if (score >= minConfidence) {
+            drawKeypoints(keypoints);
+            drawSkeleton(keypoints);
+          }
+        });
+      });
   }
 
 const intervalID = setInterval(async () => {
@@ -114,7 +140,7 @@ clearInterval(intervalID);
 
 async function init(){  
   // await webcam.setup();
-  estimatePoseOnImage();
+  //estimatePoseOnImage();
   estimatePosesOnImage();
 }
 
