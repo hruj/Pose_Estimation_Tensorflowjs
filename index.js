@@ -1,12 +1,14 @@
 const imageElement = document.getElementById('human');
 const imageElements = document.getElementById('humans');
 const canvas = document.getElementById('canvas');
+const canva1 = document.getElementById('canva1');
 const video = document.getElementById('video');
 const ctx = canvas.getContext("2d");
+const ctx1 = canva1.getContext("2d");
 const minConfidence = 0.2;
-const VIDEO_HEIGHT = 640;
-const VIDEO_WIDTH = 480;
-const frameRate = 20;
+const VIDEO_HEIGHT = 480;
+const VIDEO_WIDTH = 640;
+const frameRate = 50;
 
 navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then(vid => {
@@ -32,7 +34,7 @@ function drawPoint(y, x, r) {
 function drawKeypoints(keypoints) {
   for (let i = 0; i < keypoints.length; i++) {
     const keypoint = keypoints[i];
-    console.log(`keypoint in drawkeypoints ${keypoint}`);
+    //console.log(`keypoint in drawkeypoints ${keypoint}`);
     const { y, x } = keypoint.position;
     drawPoint(y, x, 3);
   }
@@ -58,6 +60,7 @@ function drawSkeleton(keypoints) {
   });
 }
 
+//Estimate single pose
 async function estimatePoseOnImage() { 
   //load posenet
   const net = await posenet.load();
@@ -72,13 +75,15 @@ async function estimatePoseOnImage() {
   console.log(pose);
   return pose;
 }
-/*
+
+//Estimate multiple poses on Image data
 async function estimatePosesOnImage(){
   // load posenet
   const net = await posenet.load();
   
   const poses = await net.estimateMultiplePoses( 
-      video,{ 
+      imageElements,{
+      decodingMethod: "single-person", 
       imageScaleFactor:0.50, 
       flipHorizontal:false, 
       outputStride:16,    
@@ -100,8 +105,9 @@ async function estimatePosesOnImage(){
       }
     });
     return poses;
-  }*/
+}
   
+  //Estimate multiple poses on Video data
   async function estimatePosesOnImage(){
     posenet
       .load()
@@ -130,7 +136,7 @@ async function estimatePosesOnImage(){
 
 const intervalID = setInterval(async () => {
   try {
-    estimateMultiplePoses();
+    estimatePosesOnImage();
   } catch (err) {
     clearInterval(intervalID);
     setErrorMessage(err.message);
@@ -139,8 +145,6 @@ const intervalID = setInterval(async () => {
 clearInterval(intervalID);
 
 async function init(){  
-  // await webcam.setup();
-  //estimatePoseOnImage();
   estimatePosesOnImage();
 }
 

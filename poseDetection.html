@@ -9,18 +9,18 @@
     <div>
 		<div className="App">
 			<div>
-				<canvas id="canvas" style="position: absolute;top:0;left:0;z-index:1;width:640;height:480;"></canvas>
-				<video id="video" autoplay muted="true" style=" position:absolute top=0 left=0 width='640' height='480'"></video><br><br>
+				<canvas id="canvas" style="position: relative;width:640;height:480;"></canvas>
+				<video id="video" autoplay muted="true" style="position: relative;top:0;left:0;z-index:1;width:640;height:480;"></video><br><br>
 			</div>
-			<div id='container'> 
-				<br><img id='human' src='/human.jpg' style="width: 640px; height: auto;"/>
-				<canvas id="canva" style="position: absolute;z-index:1;"></canvas><br><br>
+			<!-- <div id='container'> 
+				<br><img id='human' src='/human.jpg' style="position:relative; width: 640px; height: auto;"/>
+					<canvas id="canva" style="position: relative; z-index:1;"></canvas><br><br>
 				<div id="prediction"></div><br>
-			</div><br><br>
+			</div><br><br> -->
 
 			<div id='container1'>
-				<img id='humans' src='/humans.jpg' style="width:640px; height:480;"/>
-				<canvas id="canva1" style="position: absolute;z-index:1;"></canvas><br><br>
+				<img id='humans' src='/humans.jpg' style="position: relative; width:640px; height:480;"/>
+				<canvas id="canva1" style="position: relative;z-index:1;"></canvas><br><br>
 				<div id="predictions"></div><br><br>
 
 			</div><br>
