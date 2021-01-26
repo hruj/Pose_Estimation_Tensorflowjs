@@ -1,28 +1,13 @@
 const imageElement = document.getElementById('human');
 const imageElements = document.getElementById('humans');
 const canvas = document.getElementById('canvas');
-const canva1 = document.getElementById('canva1');
 const video = document.getElementById('video');
-const ctx = canvas.getContext("2d");
-const ctx1 = canva1.getContext("2d");
+const ctx = canvas.getContext("2d");;
 const minConfidence = 0.2;
 const VIDEO_HEIGHT = 480;
 const VIDEO_WIDTH = 640;
 const frameRate = 50;
 
-navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-    .then(vid => {
-      video.srcObject = vid;
-      const intervalID = setInterval(async () => {
-        try {
-          estimatePosesOnImage();
-        } catch (err) {
-          clearInterval(intervalID)
-          setErrorMessage(err.message)
-        }
-      }, Math.round(1000 / frameRate))
-      return () => clearInterval(intervalID)
-    });
 
 function drawPoint(y, x, r) {
   ctx.beginPath();
@@ -52,7 +37,7 @@ function drawSkeleton(keypoints) {
   const adjacentKeyPoints = posenet.getAdjacentKeyPoints(
     keypoints,
     minConfidence);
-  adjacentKeyPoints.forEach((keypoint) => {
+    adjacentKeyPoints.forEach((keypoint) => {
     drawSegment(
       keypoint[0].position,
       keypoint[1].position,
@@ -60,29 +45,13 @@ function drawSkeleton(keypoints) {
   });
 }
 
-//Estimate single pose
-async function estimatePoseOnImage() { 
-  //load posenet
-  const net = await posenet.load();
-  
-  const pose = await net.estimateSinglePose(
-    imageElement, {
-    flipHorizontal: false,
-    scaleFactor:0.5,
-    outputStride:16,
-    scoreThreshold:0.5
-  });
-  console.log(pose);
-  return pose;
-}
-
 //Estimate multiple poses on Image data
-async function estimatePosesOnImage(){
+async function estimatePosesOnImage(image){
   // load posenet
   const net = await posenet.load();
   
   const poses = await net.estimateMultiplePoses( 
-      imageElements,{
+      image,{
       decodingMethod: "single-person", 
       imageScaleFactor:0.50, 
       flipHorizontal:false, 
@@ -96,7 +65,7 @@ async function estimatePosesOnImage(){
     canvas.height = VIDEO_HEIGHT;
     ctx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
     ctx.save();
-    ctx.drawImage(imageElements, 0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
+    ctx.drawImage(image, 0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
     ctx.restore();
     poses.forEach(({ score, keypoints }) => {
       if (score >= minConfidence) {
@@ -106,33 +75,33 @@ async function estimatePosesOnImage(){
     });
     return poses;
 }
-  
-  //Estimate multiple poses on Video data
-  async function estimatePosesOnImage(){
-    posenet
-      .load()
-      .then(function (net) {
-        console.log("estimateMultiplePoses .... ");
-        return net.estimatePoses(video, {
-          decodingMethod: "single-person",
-        });
-      })
-      .then(function (poses) {
-        console.log(`got Poses ${JSON.stringify(poses)}`);
-        canvas.width = VIDEO_WIDTH;
-        canvas.height = VIDEO_HEIGHT;
-        ctx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
-        ctx.save();
-        ctx.drawImage(video, 0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
-        ctx.restore();
-        poses.forEach(({ score, keypoints }) => {
-          if (score >= minConfidence) {
-            drawKeypoints(keypoints);
-            drawSkeleton(keypoints);
-          }
-        });
+
+//Estimate multiple poses on Video data
+async function estimatePosesOnVideo(){
+  posenet
+    .load()
+    .then(function (net) {
+      console.log("estimateMultiplePoses .... ");
+      return net.estimatePoses(video, {
+        decodingMethod: "single-person",
       });
-  }
+    })
+    .then(function (poses) {
+      console.log(`got Poses ${JSON.stringify(poses)}`);
+      canvas.width = VIDEO_WIDTH;
+      canvas.height = VIDEO_HEIGHT;
+      ctx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
+      ctx.save();
+      ctx.drawImage(video, 0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
+      ctx.restore();
+      poses.forEach(({ score, keypoints }) => {
+        if (score >= minConfidence) {
+          drawKeypoints(keypoints);
+          drawSkeleton(keypoints);
+        }
+      });
+    });
+}
 
 const intervalID = setInterval(async () => {
   try {
@@ -144,8 +113,40 @@ const intervalID = setInterval(async () => {
 }, Math.round(1000 / frameRate));
 clearInterval(intervalID);
 
-async function init(){  
-  estimatePosesOnImage();
+//QnA Model
+async function loadQNA(){
+  const model = await qna.load();
+  const answers = await model.findAnswers(question, passage);
+  console.log('Answers: ');
+  console.log(answers);
 }
 
-init();
+function handleButton(elem){
+  switch(elem.id){
+    case "0":
+      estimatePosesOnImage(imageElement);
+      break;
+    case "1":
+      estimatePosesOnImage(imageElements);
+      break;
+    case "2":
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(vid => {
+      video.srcObject = vid;
+      const intervalID = setInterval(async () => {
+        try {
+          estimatePosesOnVideo();
+        } catch (err) {
+          clearInterval(intervalID)
+          setErrorMessage(err.message)
+        }
+      }, Math.round(1000 / frameRate))
+      return () => clearInterval(intervalID)
+      });
+
+      estimatePosesOnVideo();
+      break;
+    case "3":
+      loadQNA();
+  }
+}

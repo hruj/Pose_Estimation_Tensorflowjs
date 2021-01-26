@@ -1,28 +1,43 @@
 <html>
 <head>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"> </script>
-<!-- <script src="webcam.js"></script> -->
-<!-- <script src="pose-dataset.js"></script> -->
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"> </script>
+	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna"> </script>
+	<!-- <script src="webcam.js"></script> -->
+	<!-- <script src="pose-dataset.js"></script> -->
 </head>
 <body>
+	<div>
+        <button type="button" id="0" onclick="handleButton(this)" >Single Pose on Image</button>
+	    <button type="button" id="1" onclick="handleButton(this)" >Multiple Poses on Image</button>
+		<button type="button" id="2" onclick="handleButton(this)" >Multiple Poses on Video</button>
+		<button type="button" id="2" onclick="handleButton(this)" >QnA</button>
+    </div>
     <div>
 		<div className="App">
 			<div>
 				<canvas id="canvas" style="position: relative;width:640;height:480;"></canvas>
 				<video id="video" autoplay muted="true" style="position: relative;top:0;left:0;z-index:1;width:640;height:480;"></video><br><br>
 			</div>
-			<!-- <div id='container'> 
-				<br><img id='human' src='/human.jpg' style="position:relative; width: 640px; height: auto;"/>
-					<canvas id="canva" style="position: relative; z-index:1;"></canvas><br><br>
+			<div id='container'>
+				<form method="post" enctype="multipart/form-data" action="/upload">
+					<input type="file" name="file">
+					<input type="submit" value="Submit">
+				</form><br> 
+				<img id='human' src='/human.jpg' style="position:relative; width: 640px; height: 480px;"/><br>
+				<canvas id="canva" style="position: relative; z-index:1;"></canvas><br><br>
 				<div id="prediction"></div><br>
-			</div><br><br> -->
+			</div><br><br>
 
 			<div id='container1'>
-				<img id='humans' src='/humans.jpg' style="position: relative; width:640px; height:480;"/>
+				<form method="post" enctype="multipart/form-data" action="/upload">
+					<input type="file" name="file">
+					<input type="submit" value="Submit">
+				</form><br>
+				<img id='humans' src='/humans.jpg' style="position: relative; width:640px; height:480;"/><br>
 				<canvas id="canva1" style="position: relative;z-index:1;"></canvas><br><br>
 				<div id="predictions"></div><br><br>
-
 			</div><br>
 		</div>
 	
