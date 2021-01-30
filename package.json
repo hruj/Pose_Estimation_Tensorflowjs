@@ -6,6 +6,7 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "node index.js",
+    "web":"node index.js",
     "build:prod": "browserify src/PoseNet/index.jsx -o lib/index.js -u react -t [ babelify ]",
     "build:css": "node-sass src/index.scss example/style.css",
     "copy:html": "cp src/index.html example/",
