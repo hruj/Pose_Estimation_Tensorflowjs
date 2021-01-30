@@ -39,6 +39,7 @@
     "@tensorflow/tfjs-core": "^3.0.0",
     "JSON": "^1.0.0",
     "babel-polyfill": "^6.26.0",
+    "document": "^0.4.7",
     "package-lock.json": "^1.0.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
