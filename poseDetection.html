@@ -6,44 +6,57 @@
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna"> </script>
 	<!-- <script src="webcam.js"></script> -->
 	<!-- <script src="pose-dataset.js"></script> -->
+	<style>
+		.App{
+			margin: auto;
+  			width: 50%;
+  			border: 5px solid black;
+  			padding: 15px;}
+	</style>
 </head>
 <body>
-	<div>
-        <button type="button" id="0" onclick="handleButton(this)" >Single Pose on Image</button>
-	    <button type="button" id="1" onclick="handleButton(this)" >Multiple Poses on Image</button>
-		<button type="button" id="2" onclick="handleButton(this)" >Multiple Poses on Video</button>
-		<button type="button" id="2" onclick="handleButton(this)" >QnA</button>
-    </div>
+	<div class='App'>
+		<h1>Menu</h1>
+		<h2>Pose Detection</h2>
+        <button type="button" id="0" onclick="handleButton(this)" >Single Pose on Image</button><br><br>
+	    <button type="button" id="1" onclick="handleButton(this)" >Multiple Poses on Image</button><br><br>
+		<button type="button" id="2" onclick="handleButton(this)" >Multiple Poses on Video</button><br><br>
+		<!-- <button type="button" id="2" onclick="handleButton(this)" >QnA</button> -->
+	</div>
+	<div class="App">
+		<h2>Text Data</h2>
+		<h3>Content</h3>
+		<br><textarea id='context' rows='7' cols='60'>The ghost of the King of Denmark tells his son Hamlet to avenge his murder by killing the new king, Hamlet's uncle.Hamlet feigns madness, contemplates life and death, and seeks revenge. His uncle, fearing for his life, also devises plots to kill Hamlet. The play ends with a duel, during which the King, Queen, Hamlet's opponent and Hamlet himself are all killed.</textarea> 
+		<h3>Question</h3>
+		<input type=text id="question">
+		<button type="button" id="3" onclick="handleButton(this)" >Ask</button><br>
+		<h3>Answers</h3>
+		<div id='answer'></div>
+		
+	</div>
     <div>
-		<div className="App">
+		<div class="App">
 			<div>
-				<canvas id="canvas" style="position: relative;width:640;height:480;"></canvas>
 				<video id="video" autoplay muted="true" style="position: relative;top:0;left:0;z-index:1;width:640;height:480;"></video><br><br>
+				<canvas id="canvas" style="position: absolute;width:640;height:480;"></canvas><br>
 			</div>
-			<div id='container'>
-				<form method="post" enctype="multipart/form-data" action="/upload">
-					<input type="file" name="file">
-					<input type="submit" value="Submit">
-				</form><br> 
+			<div id='container'> 
 				<img id='human' src='/human.jpg' style="position:relative; width: 640px; height: 480px;"/><br>
-				<canvas id="canva" style="position: relative; z-index:1;"></canvas><br><br>
-				<div id="prediction"></div><br>
 			</div><br><br>
 
 			<div id='container1'>
-				<form method="post" enctype="multipart/form-data" action="/upload">
-					<input type="file" name="file">
-					<input type="submit" value="Submit">
-				</form><br>
 				<img id='humans' src='/humans.jpg' style="position: relative; width:640px; height:480;"/><br>
-				<canvas id="canva1" style="position: relative;z-index:1;"></canvas><br><br>
-				<div id="predictions"></div><br><br>
 			</div><br>
 		</div>
 	
-	<!-- <script type="text/javascript">
-      posenet.load().then(function(net){});
-    </script> -->
 </body>
+<!-- <script>
+	qna.load().then(model => {
+    // Find the answers
+    model.findAnswers(question, passage).then(answers => {
+      console.log('Answers: ', answers);
+	});
+  });
+</script> -->
 <script src="index.js"></script>
 </html>

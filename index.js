@@ -8,7 +8,6 @@ const VIDEO_HEIGHT = 480;
 const VIDEO_WIDTH = 640;
 const frameRate = 50;
 
-
 function drawPoint(y, x, r) {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, 2 * Math.PI);
@@ -44,7 +43,6 @@ function drawSkeleton(keypoints) {
       color,  1,);
   });
 }
-
 //Estimate multiple poses on Image data
 async function estimatePosesOnImage(image){
   // load posenet
@@ -113,12 +111,17 @@ const intervalID = setInterval(async () => {
 }, Math.round(1000 / frameRate));
 clearInterval(intervalID);
 
+const question = document.getElementById("question");
+const passage =  document.getElementById('context').value;
+const answerDiv = document.getElementById('answer');
+
 //QnA Model
 async function loadQNA(){
   const model = await qna.load();
-  const answers = await model.findAnswers(question, passage);
-  console.log('Answers: ');
+  const answers = await model.findAnswers(question.value, passage); 
+
   console.log(answers);
+  answerDiv.innerHTML = answers.map(answer => answer.text + ' (probability of correctness =' + answer.score + ')').join('<br>');
 }
 
 function handleButton(elem){
@@ -148,5 +151,6 @@ function handleButton(elem){
       break;
     case "3":
       loadQNA();
+      break;
   }
 }
