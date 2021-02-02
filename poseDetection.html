@@ -4,12 +4,13 @@
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"> </script>
 	<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/qna"> </script>
+	<script src ="bundle.js"></script>
 	<!-- <script src="webcam.js"></script> -->
 	<!-- <script src="pose-dataset.js"></script> -->
 	<style>
 		.App{
 			margin: auto;
-  			width: 50%;
+  			width: 75%;
   			border: 5px solid black;
   			padding: 15px;}
 	</style>
@@ -37,13 +38,17 @@
     <div>
 		<div class="App">
 			<div>
+				<h2>Canvas</h2>
+				<canvas id="canvas" style="position: relative;width:640;height:480px;"></canvas><br><br>
+				<h2>Video</h2>
 				<video id="video" autoplay muted="true" style="position: relative;top:0;left:0;z-index:1;width:640;height:480;"></video><br><br>
-				<canvas id="canvas" style="position: absolute;width:640;height:480;"></canvas><br>
 			</div>
+			<h2> Input Images</h2>
+			<h3> For Single Pose</h3>
 			<div id='container'> 
 				<img id='human' src='/human.jpg' style="position:relative; width: 640px; height: 480px;"/><br>
 			</div><br><br>
-
+			<h3> For Multiple Poses</h3>
 			<div id='container1'>
 				<img id='humans' src='/humans.jpg' style="position: relative; width:640px; height:480;"/><br>
 			</div><br>

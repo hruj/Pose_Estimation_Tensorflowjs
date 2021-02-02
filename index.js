@@ -1,12 +1,19 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const jsdom = require("jsdom");
+const {JSDOM} = jsdom;
+const {document} = (new JSDOM().window);
+
 const imageElement = document.getElementById('human');
 const imageElements = document.getElementById('humans');
 const canvas = document.getElementById('canvas');
 const video = document.getElementById('video');
-const ctx = canvas.getContext("2d");;
+const ctx = canvas.getContext("2d");
 const minConfidence = 0.2;
 const VIDEO_HEIGHT = 480;
 const VIDEO_WIDTH = 640;
 const frameRate = 50;
+
 
 function drawPoint(y, x, r) {
   ctx.beginPath();
